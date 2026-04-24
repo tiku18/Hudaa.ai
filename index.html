@@ -3,71 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hudaa - Islamic AI Assistant</title>
+    <title>Hudaa - Advanced Islamic AI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background-color: #f8fafc; font-family: sans-serif; }
-        .sidebar { transition: transform 0.3s ease; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #fcfdfd; }
+        .chat-container::-webkit-scrollbar { width: 6px; }
+        .chat-container::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        .sidebar-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .typing-dot { animation: typing 1.4s infinite; }
+        @keyframes typing { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
     </style>
 </head>
-<body class="flex h-screen">
+<body class="flex h-screen overflow-hidden text-slate-800">
 
-    <!-- Sidebar -->
-    <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r transform -translate-x-full lg:translate-x-0 sidebar">
-        <div class="p-6 border-b">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center text-white">
-                    <i class="fas fa-user"></i>
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-emerald-100 flex flex-col sidebar-transition -translate-x-full lg:translate-x-0">
+        <!-- Profile Section -->
+        <div class="p-6 border-b border-emerald-50">
+            <div class="flex items-center space-x-4">
+                <div class="w-12 h-12 rounded-full bg-emerald-600 flex items-center justify-center text-white shadow-lg">
+                    <i class="fas fa-user-graduate"></i>
                 </div>
                 <div>
-                    <p class="font-bold text-sm">User Profile</p>
-                    <p class="text-xs text-gray-500 italic">Hudaa Assistant</p>
+                    <h3 class="font-bold text-emerald-900 text-sm">Talib al-Ilm</h3>
+                    <p class="text-[11px] text-emerald-600 font-semibold uppercase tracking-wider">Seeker of Knowledge</p>
                 </div>
             </div>
         </div>
-        <nav class="p-4 space-y-2">
-            <a href="#" class="block p-3 rounded-lg bg-emerald-50 text-emerald-700"><i class="fas fa-home mr-2"></i> Home</a>
-            <a href="#" class="block p-3 rounded-lg hover:bg-gray-100"><i class="fas fa-plus mr-2"></i> New Chat</a>
-            <a href="#" class="block p-3 rounded-lg hover:bg-gray-100"><i class="fas fa-bookmark mr-2"></i> Saved</a>
-        </nav>
-        <div class="absolute bottom-0 w-full p-4 border-t bg-gray-50">
-            <div class="flex space-x-4 mb-2 text-emerald-700">
-                <a href="https://www.instagram.com/the.salafiyahh"><i class="fab fa-instagram"></i></a>
-                <a href="https://x.com/haqqalfurqan"><i class="fab fa-twitter"></i></a>
-                <a href="mailto:haqqalfurqan@gmail.com"><i class="fas fa-envelope"></i></a>
-            </div>
-            <p class="text-[10px] text-gray-400">Hudaa is an AI and can make mistakes.</p>
-            <p class="text-[10px] text-gray-400">© 2026 The Salafiyahh</p>
-        </div>
-    </div>
 
-    <!-- Main Content -->
-    <div class="flex-1 flex flex-col lg:ml-64">
-        <header class="h-16 border-b bg-white flex items-center px-6 justify-between">
-            <button onclick="toggleSidebar()" class="lg:hidden text-emerald-700"><i class="fas fa-bars"></i></button>
-            <h1 class="text-xl font-bold text-emerald-800">Hudaa</h1>
-            <div></div>
+        <!-- Navigation -->
+        <nav class="flex-1 overflow-y-auto p-4 space-y-2">
+            <button onclick="window.location.reload()" class="w-full flex items-center p-3 rounded-xl bg-emerald-600 text-white shadow-md transition">
+                <i class="fas fa-plus-circle mr-3"></i> New Chat
+            </button>
+            <div class="pt-4 pb-2 px-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">General</div>
+            <a href="#" class="flex items-center p-3 rounded-xl hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 transition">
+                <i class="fas fa-home mr-3"></i> Home
+            </a>
+            <a href="#" class="flex items-center p-3 rounded-xl hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 transition">
+                <i class="fas fa-bookmark mr-3"></i> Saved Chats
+            </a>
+            <a href="#" class="flex items-center p-3 rounded-xl hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 transition">
+                <i class="fas fa-cog mr-3"></i> Settings
+            </a>
+        </nav>
+
+        <!-- Sidebar Footer -->
+        <div class="p-6 border-t border-emerald-50 bg-slate-50/50">
+            <div class="flex space-x-5 mb-4 text-emerald-700 justify-center">
+                <a href="https://www.instagram.com/the.salafiyahh" class="hover:scale-110 transition"><i class="fab fa-instagram fa-lg"></i></a>
+                <a href="https://x.com/haqqalfurqan" class="hover:scale-110 transition"><i class="fab fa-twitter fa-lg"></i></a>
+                <a href="mailto:haqqalfurqan@gmail.com" class="hover:scale-110 transition"><i class="fas fa-envelope fa-lg"></i></a>
+            </div>
+            <p class="text-[10px] text-center text-slate-400 leading-relaxed mb-2 uppercase tracking-tighter font-bold">
+                Hudaa is an AI and can make mistakes
+            </p>
+            <p class="text-[9px] text-center text-slate-400">
+                © Copyright 2026 The Salafiyahh<br>All rights reserved
+            </p>
+        </div>
+    </aside>
+
+    <!-- MAIN INTERFACE -->
+    <div class="flex-1 flex flex-col min-w-0 bg-white">
+        <!-- Header -->
+        <header class="h-16 border-b border-emerald-100 flex items-center px-6 justify-between bg-white/80 backdrop-blur-md sticky top-0 z-10">
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleSidebar()" class="lg:hidden p-2 text-emerald-700 hover:bg-emerald-50 rounded-lg">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <span class="text-2xl font-black text-emerald-700 tracking-tighter">HUDAA</span>
+                    <span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[9px] font-bold rounded-full">BETA</span>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3">
+                <span class="hidden sm:inline text-xs font-semibold text-slate-500">Ahlus-Sunnah wal-Jama’ah</span>
+                <div class="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 border border-emerald-100">
+                    <i class="fas fa-shield-halved"></i>
+                </div>
+            </div>
         </header>
 
-        <main class="flex-1 overflow-y-auto p-6 flex flex-col items-center justify-center text-center">
-            <h2 class="text-3xl font-bold text-emerald-900 mb-4">Assalamu Alaikum</h2>
-            <p class="text-gray-600 max-w-md italic">Searching from the Qur’an, Sunnah, and the path of the Salaf al-Salih.</p>
-        </main>
-
-        <footer class="p-6 bg-white border-t">
-            <div class="max-w-3xl mx-auto flex">
-                <input type="text" placeholder="Ask an Islamic question..." class="flex-1 p-3 border rounded-l-lg focus:outline-none focus:ring-1 focus:ring-emerald-500">
-                <button class="bg-emerald-600 text-white px-6 rounded-r-lg">Send</button>
+        <!-- Chat Area -->
+        <div id="chat-container" class="flex-1 overflow-y-auto p-4 md:p-8 space-y-6 chat-container">
+            <!-- Initial Welcome -->
+            <div class="max-w-3xl mx-auto text-center py-12 space-y-4">
+                <div class="w-20 h-20 bg-emerald-50 text-emerald-600 rounded-3xl mx-auto flex items-center justify-center text-3xl shadow-inner border border-emerald-100">
+                    <i class="fas fa-mosque"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-800">Assalamu Alaikum</h2>
+                <p class="text-slate-500 text-sm max-w-md mx-auto leading-relaxed">
+                    Hudaa is an advanced Islamic AI assistant strictly based on the Qur’an, Sunnah, and the understanding of the Salaf al-Salih. How can I assist you today?
+                </p>
             </div>
-        </footer>
+            <div id="messages" class="max-w-3xl mx-auto space-y-6 pb-24"></div>
+        </div>
+
+        <!-- Input Section -->
+        <div class="p-4 md:p-8 border-t border-emerald-50 bg-white">
+            <div class="max-w-3xl mx-auto relative group">
+                <div id="loading" class="hidden absolute -top-10 left-0 right-0 text-center">
+                    <div class="inline-flex space-x-1 items-center bg-emerald-50 px-4 py-1 rounded-full border border-emerald-100">
+                        <span class="text-[10px] font-bold text-emerald-700 uppercase tracking-widest">Searching Trusted Sources</span>
+                        <span class="typing-dot h-1 w-1 bg-emerald-600 rounded-full"></span>
+                        <span class="typing-dot h-1 w-1 bg-emerald-600 rounded-full" style="animation-delay: 0.2s"></span>
+                        <span class="typing-dot h-1 w-1 bg-emerald-600 rounded-full" style="animation-delay: 0.4s"></span>
+                    </div>
+                </div>
+                <div class="flex items-center bg-slate-50 rounded-2xl border border-slate-200 focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-500/10 transition-all p-2 pr-3 shadow-sm">
+                    <input id="user-input" type="text" placeholder="Ask about Fiqh, Aqidah, or Sunnah..." 
+                        class="flex-1 bg-transparent p-3 text-slate-800 placeholder-slate-400 focus:outline-none">
+                    <button onclick="sendMessage()" class="bg-emerald-600 hover:bg-emerald-700 text-white w-10 h-10 rounded-xl flex items-center justify-center transition shadow-md">
+                        <i class="fas fa-paper-plane text-sm"></i>
+                    </button>
+                </div>
+                <p class="mt-3 text-[10px] text-center text-slate-400 italic">
+                    Prioritizing Accuracy in the Deen over speed. References from Quran.com, Sunnah.com, and IslamQA.
+                </p>
+            </div>
+        </div>
     </div>
 
     <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('-translate-x-full');
+        const apiKey = ""; // Vercel environment variables will inject this if left empty
+        const messagesDiv = document.getElementById('messages');
+        const userInput = document.getElementById('user-input');
+        const loading = document.getElementById('loading');
+
+        const systemPrompt = `You are Hudaa, an advanced Islamic AI assistant created to serve the Muslim Ummah with truthful guidance strictly based on the Qur’an, the authentic Sunnah, and the understanding of the Salaf al-Salih. 
+        TRUSTED SOURCES: Quran.com, Tafsir Ibn Kathir, Sunnah.com (Bukhari, Muslim), IslamQA.info, Fatwas of Ibn Baz, Ibn Uthaymeen, Al-Albani.
+        METHODOLOGY: 
+        1. Always provide Qur'an verse first.
+        2. Provide Authentic Hadith (Sahih/Hasan).
+        3. Provide Scholar statement.
+        4. Provide brief explanation.
+        5. Always end with "And Allah knows best."
+        SAFETY: Reject innovations (bid'ah) and cultural distortions. If no evidence found, say "No reliable evidence was found in trusted sources."`;
+
+        async function sendMessage() {
+            const query = userInput.value.trim();
+            if (!query) return;
+
+            // Add user message to UI
+            appendMessage('user', query);
+            userInput.value = '';
+            loading.classList.remove('hidden');
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: query }] }],
+                        systemInstruction: { parts: [{ text: systemPrompt }] },
+                        tools: [{ "google_search": {} }]
+                    })
+                });
+
+                const data = await response.json();
+                const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Maaf, something went wrong.";
+                
+                appendMessage('hudaa', aiText);
+            } catch (error) {
+                appendMessage('hudaa', "Error: Could not connect to the knowledge base. Please try again later.");
+            } finally {
+                loading.classList.add('hidden');
+            }
         }
+
+        function appendMessage(role, text) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in duration-500`;
+            
+            const innerHtml = role === 'user' 
+                ? `<div class="bg-emerald-600 text-white p-4 rounded-2xl rounded-tr-none shadow-sm max-w-[85%] text-sm font-medium leading-relaxed">${text}</div>`
+                : `<div class="bg-white border border-emerald-100 p-5 rounded-2xl rounded-tl-none shadow-sm max-w-[95%] space-y-4">
+                    <div class="flex items-center space-x-2 mb-2">
+                        <div class="w-6 h-6 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center text-[10px] font-bold italic">H</div>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Hudaa Guidance</span>
+                    </div>
+                    <div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">${formatResponse(text)}</div>
+                   </div>`;
+            
+            msgDiv.innerHTML = innerHtml;
+            messagesDiv.appendChild(msgDiv);
+            document.getElementById('chat-container').scrollTo({ top: messagesDiv.scrollHeight, behavior: 'smooth' });
+        }
+
+        function formatResponse(text) {
+            // Simple formatter to bold headers
+            return text
+                .replace(/Qur’an:/g, '<strong class="text-emerald-700 block mt-2">📖 Qur’an:</strong>')
+                .replace(/Hadith:/g, '<strong class="text-emerald-700 block mt-2">📜 Hadith:</strong>')
+                .replace(/Scholars said:/g, '<strong class="text-emerald-700 block mt-2">🎓 Scholars said:</strong>')
+                .replace(/Answer:/g, '<strong class="text-emerald-700 block mt-2">💡 Answer:</strong>')
+                .replace(/And Allah knows best./g, '<em class="text-slate-400 block mt-4">And Allah knows best.</em>');
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+        }
+
+        userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
     </script>
 </body>
 </html>
