@@ -214,11 +214,10 @@ input,textarea{font-family:inherit}
 }
 </style>
 </head>
-<body>
+<body onload="init()">
 
 <div id="ov" onclick="closeSB()"></div>
 
-<!-- SIDEBAR -->
 <aside id="sb">
   <div class="sb-head">
     <button class="sb-x" onclick="closeSB()">✕</button>
@@ -257,7 +256,6 @@ input,textarea{font-family:inherit}
   </div>
 </aside>
 
-<!-- NAVBAR -->
 <nav id="nav">
   <div class="nav-logo">
     <div class="nav-em">☪</div>
@@ -274,7 +272,6 @@ input,textarea{font-family:inherit}
   </div>
 </nav>
 
-<!-- MAIN -->
 <div id="app">
   <div id="chat">
     <div class="ci" id="ci"></div>
@@ -297,7 +294,6 @@ input,textarea{font-family:inherit}
   </div>
 </div>
 
-<!-- SETTINGS MODAL -->
 <div id="setmod" class="mwrap">
   <div class="mov" onclick="closeSet()"></div>
   <div class="mbox">
@@ -319,27 +315,26 @@ input,textarea{font-family:inherit}
   </div>
 </div>
 
-<!-- API KEY MODAL -->
 <div id="keymod" class="mwrap">
   <div class="mov"></div>
   <div class="mbox">
     <div class="mhd">
-      <div class="mttl">Connect Hudaa</div>
+      <div class="mttl">Connect Hudaa (Gemini)</div>
       <button class="mx" onclick="closeKey()">✕</button>
     </div>
     <div class="mbdy">
       <div class="ibox">
-        <strong>A Claude API key is required.</strong><br><br>
-        1. Go to <a href="https://console.anthropic.com/" target="_blank" rel="noopener">console.anthropic.com</a><br>
-        2. Sign up / log in (free)<br>
-        3. Go to <strong>API Keys</strong> → click <strong>Create Key</strong><br>
+        <strong>A Gemini API key is required (Free).</strong><br><br>
+        1. Go to <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">aistudio.google.com</a><br>
+        2. Sign up / log in with Google<br>
+        3. Click <strong>Create API key</strong><br>
         4. Copy and paste it below<br><br>
-        Your key starts with <code>sk-ant-</code> and is saved on your device only.
+        Your key starts with <code>AIzaSy</code> and is saved on your device only.
       </div>
       <div>
-        <label class="flbl" for="kinp">Claude API Key</label>
+        <label class="flbl" for="kinp">Gemini API Key</label>
         <div class="kiwrap">
-          <input type="password" id="kinp" class="finp" placeholder="sk-ant-api03-…" maxlength="300"/>
+          <input type="password" id="kinp" class="finp" placeholder="AIzaSy-api03-…" maxlength="300"/>
           <button class="keye" onclick="toggleKV()" title="Show / hide">👁</button>
         </div>
       </div>
@@ -348,7 +343,6 @@ input,textarea{font-family:inherit}
   </div>
 </div>
 
-<!-- TOAST -->
 <div id="toast"></div>
 
 <script>
@@ -362,8 +356,8 @@ var CHAT_ID   = '';
 var HISTORY   = [];
 var SAVED     = {};
 
-/* Claude model — claude-haiku is fast and cheap; change to claude-sonnet for smarter answers */
-var MODEL = 'claude-haiku-4-5-20251001';
+/* Gemini model — fast, cheap, and powerful */
+var MODEL = 'gemini-1.5-flash';
 
 var SYSTEM = 'You are Hudaa, an Islamic AI assistant. Provide authentic, evidence-based answers strictly from the Qur\'an, authentic Sunnah, and the understanding of the Salaf al-Salih.\n\n' +
 'RULES:\n' +
@@ -420,7 +414,7 @@ function showWelcome() {
     '<div id="ws">' +
     '<div class="w-em">☪</div>' +
     '<div style="text-align:center">' +
-      '<div class="w-bsm">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>' +
+      '<div class="w-bsm">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>' + 
       '<div class="w-ttl" style="margin-top:9px">Welcome to Hudaa</div>' +
     '</div>' +
     '<p class="w-sub">Ask your Islamic questions and receive authentic, evidence-based answers grounded in the Qur\'an, Sunnah, and the understanding of the Salaf al-Ṣāliḥ.</p>' +
@@ -516,10 +510,8 @@ function toggleKV() {
 }
 function saveKey() {
   var v = document.getElementById('kinp').value.trim();
-  if (!v) { toast('Please paste your Claude API key'); return; }
-  if (v.indexOf('sk-ant') !== 0) {
-    toast('Key should start with "sk-ant-…" — check and retry'); return;
-  }
+  if (!v) { toast('Please paste your Gemini API key'); return; }
+  
   API_KEY = v;
   localStorage.setItem('hd_k', API_KEY);
   closeKey();
@@ -548,7 +540,7 @@ function send() {
   BUSY = true;
   document.getElementById('snd').disabled = true;
 
-  callClaude(text)
+  callGemini(text)
     .then(function(reply) {
       typRow.remove();
       addBubble('ai', reply);
@@ -569,61 +561,59 @@ function send() {
 }
 
 /* ══════════════════════════════════
-   CLAUDE API  ← works from browser
-   Uses anthropic-dangerous-direct-browser-access header
-   which Anthropic provides for exactly this use-case
+   GEMINI API
 ══════════════════════════════════ */
-function callClaude(userText) {
-  /* Build messages array: prior history + new user message */
-  var messages = [];
+function callGemini(userText) {
+  // Prep the contents for Gemini
+  var contents = [];
+  
+  // Add History
   for (var i = 0; i < HISTORY.length; i++) {
-    messages.push({ role: HISTORY[i].role, content: HISTORY[i].content });
+    contents.push({
+        role: HISTORY[i].role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: HISTORY[i].content }]
+    });
   }
-  messages.push({ role: 'user', content: userText });
+  
+  // Add new user message
+  contents.push({ role: 'user', parts: [{ text: userText }] });
 
   var payload = {
-    model:      MODEL,
-    max_tokens: 2048,
-    system:     SYSTEM,
-    messages:   messages
+    contents: contents,
+    system_instruction: {
+        parts: [{ text: SYSTEM }]
+    },
+    generationConfig: {
+        maxOutputTokens: 2048,
+        temperature: 0.7
+    }
   };
 
-  return fetch('https://api.anthropic.com/v1/messages', {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`;
+
+  return fetch(url, {
     method: 'POST',
-    headers: {
-      'Content-Type':                             'application/json',
-      'x-api-key':                                API_KEY,
-      'anthropic-version':                        '2023-06-01',
-      'anthropic-dangerous-direct-browser-access':'true'
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
   })
   .then(function(res) {
     return res.json().then(function(data) {
       if (!res.ok) {
         var msg = (data && data.error && data.error.message) || ('Error ' + res.status);
-        if (res.status === 401) msg = 'Invalid API key. Please re-enter your Claude API key in Settings.';
-        if (res.status === 403) msg = 'API key not authorised. Check your Anthropic account.';
-        if (res.status === 429) msg = 'Rate limit reached — please wait a moment and try again.';
-        if (res.status >= 500)  msg = 'Anthropic server error — please try again shortly.';
+        if (res.status === 400) msg = 'Key error or Invalid request. Check your Gemini key.';
         throw new Error(msg);
       }
       return data;
     });
   })
   .then(function(data) {
-    if (!data.content || !data.content.length) throw new Error('Empty response. Please try again.');
-    var text = '';
-    for (var i = 0; i < data.content.length; i++) {
-      if (data.content[i].type === 'text') text += data.content[i].text;
-    }
-    if (!text) throw new Error('No text in response. Please try again.');
-    return text;
+    if (!data.candidates || !data.candidates[0].content) throw new Error('Empty response from Gemini.');
+    return data.candidates[0].content.parts[0].text;
   });
 }
 
 /* ══════════════════════════════════
-   DOM
+   DOM & UI SUPPORT
 ══════════════════════════════════ */
 function addBubble(role, text) {
   var ci  = document.getElementById('ci');
@@ -659,137 +649,106 @@ function addTyping() {
   return row;
 }
 
+function renderAI(t) {
+  let h = esc(t);
+  h = h.replace(/\n\n/g, '<br><br>');
+  h = h.replace(/\n/g, '<br>');
+  h = h.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  
+  // Format the specific bold headers you requested
+  const labels = ['Qur\'an:', 'Hadith:', 'Scholars said:', 'Answer:'];
+  labels.forEach(l => {
+     const reg = new RegExp(`<strong>${l}<\/strong>`, 'g');
+     h = h.replace(reg, `<div class="rlbl">${l}</div>`);
+  });
+
+  return h;
+}
+
+function esc(t) {
+  var div = document.createElement('div');
+  div.textContent = t;
+  return div.innerHTML;
+}
+
+function pad(n) { return n < 10 ? '0' + n : n; }
+
 function scrollBot() {
-  var c = document.getElementById('chat');
-  c.scrollTop = c.scrollHeight;
+  var ch = document.getElementById('chat');
+  ch.scrollTo({ top: ch.scrollHeight, behavior: 'smooth' });
 }
 
-function pad(n){ return n < 10 ? '0' + n : '' + n; }
+function toast(m) {
+  var el = document.getElementById('toast');
+  el.textContent = m;
+  el.classList.add('on');
+  setTimeout(() => el.classList.remove('on'), 3000);
+}
 
-/* ══════════════════════════════════
-   RENDER AI TEXT
-══════════════════════════════════ */
-function renderAI(raw) {
-  var t = esc(raw);
-
-  /* bold */
-  t = t.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
-  /* italic */
-  t = t.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
-
-  /* Arabic lines */
-  var lines = t.split('\n');
-  for (var i = 0; i < lines.length; i++) {
-    var plain = lines[i].replace(/<[^>]+>/g, '');
-    if (/[\u0600-\u06FF]/.test(plain) && plain.trim().length > 1) {
-      lines[i] = '<span class="ar">' + lines[i] + '</span>';
+function setupTextarea() {
+  var el = document.getElementById('inp');
+  el.addEventListener('input', () => resizeTa(el));
+  el.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      send();
     }
-  }
-  t = lines.join('\n');
-
-  /* section blocks */
-  t = t.replace(/<strong>(Qur&#x27;an|Quran):?<\/strong>/gi,
-      '<div class="rsec"><div class="rlbl">📖 Qur\'an</div>');
-  t = t.replace(/<strong>Hadith:?<\/strong>/gi,
-      '</div><div class="rsec"><div class="rlbl">📜 Hadith</div>');
-  t = t.replace(/<strong>Scholars said:?<\/strong>/gi,
-      '</div><div class="rsec"><div class="rlbl">🎓 Scholars Said</div>');
-  t = t.replace(/<strong>Answer:?<\/strong>/gi,
-      '</div><div class="rsec ans"><div class="rlbl">💡 Answer</div>');
-  t = t.replace(/<em>And Allah knows best\.?<\/em>/gi,
-      '</div><div class="akb">And Allāh knows best.</div>');
-
-  /* newlines to br */
-  t = t.replace(/\n/g, '<br>');
-  return t;
+  });
 }
 
-function esc(s) {
-  return String(s)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;')
-    .replace(/'/g,'&#x27;');
+function resizeTa(el) {
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
 }
 
 /* ══════════════════════════════════
-   SAVED CHATS
+   SAVED CHATS LOGIC
 ══════════════════════════════════ */
-function persistChat(firstQ) {
-  if (HISTORY.length < 2) return;
-  var title = firstQ ? firstQ.slice(0,52) + (firstQ.length > 52 ? '…' : '') : 'Chat';
-  if (!SAVED[CHAT_ID]) {
-    SAVED[CHAT_ID] = { title: title, date: Date.now(), h: JSON.parse(JSON.stringify(HISTORY)) };
-  } else {
-    SAVED[CHAT_ID].h = JSON.parse(JSON.stringify(HISTORY));
-  }
-  try { localStorage.setItem('hd_s', JSON.stringify(SAVED)); } catch(e){}
+function persistChat(firstText) {
+  if (HISTORY.length < 2 && !firstText) return;
+  var title = firstText || (HISTORY[0] ? HISTORY[0].content : "Conversation");
+  if (title.length > 40) title = title.substring(0, 37) + "...";
+  
+  SAVED[CHAT_ID] = {
+    title: title,
+    history: HISTORY,
+    time: Date.now()
+  };
+  localStorage.setItem('hd_s', JSON.stringify(SAVED));
 }
 
 function renderSaved() {
   var list = document.getElementById('sclist');
-  var nsc  = document.getElementById('nsc');
-  var keys = Object.keys(SAVED)
-    .sort(function(a,b){ return (SAVED[b].date||0) - (SAVED[a].date||0); })
-    .slice(0, 20);
-  if (!keys.length) { list.innerHTML = ''; nsc.style.display = 'block'; return; }
-  nsc.style.display = 'none';
-  list.innerHTML = keys.map(function(id) {
-    return '<div class="sc-item" onclick="loadChat(\'' + id + '\')">' +
-           '<div class="sc-dot"></div>' +
-           '<span class="sc-ttl">' + esc(SAVED[id].title) + '</span>' +
-           '</div>';
-  }).join('');
+  var none = document.getElementById('nsc');
+  list.innerHTML = '';
+  
+  var keys = Object.keys(SAVED).sort((a,b) => SAVED[b].time - SAVED[a].time);
+  
+  if (keys.length === 0) {
+    none.style.display = 'block';
+    return;
+  }
+  
+  none.style.display = 'none';
+  keys.forEach(k => {
+    var item = document.createElement('div');
+    item.className = 'sc-item';
+    item.onclick = () => loadChat(k);
+    item.innerHTML = `<div class="sc-dot"></div><div class="sc-ttl">${esc(SAVED[k].title)}</div>`;
+    list.appendChild(item);
+  });
 }
 
 function loadChat(id) {
-  var c = SAVED[id];
-  if (!c) return;
   closeSB();
-  document.getElementById('ci').innerHTML = '';
-  HISTORY = [];
+  persistChat();
   CHAT_ID = id;
-  var h = c.h || [];
-  for (var i = 0; i < h.length; i++) {
-    var role = (h[i].role === 'assistant') ? 'ai' : 'u';
-    addBubble(role, h[i].content || '');
-    HISTORY.push(h[i]);
-  }
-  toast('Chat loaded ✨');
+  HISTORY = SAVED[id].history;
+  
+  document.getElementById('ci').innerHTML = '';
+  HISTORY.forEach(m => addBubble(m.role === 'assistant' ? 'ai' : 'u', m.content));
+  toast('Chat loaded');
 }
-
-/* ══════════════════════════════════
-   TEXTAREA
-══════════════════════════════════ */
-function setupTextarea() {
-  var ta = document.getElementById('inp');
-  ta.addEventListener('input', function(){ resizeTa(ta); });
-  ta.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
-  });
-}
-function resizeTa(ta) {
-  ta.style.height = 'auto';
-  ta.style.height = Math.min(ta.scrollHeight, 140) + 'px';
-}
-
-/* ══════════════════════════════════
-   TOAST
-══════════════════════════════════ */
-var _tt;
-function toast(msg) {
-  var el = document.getElementById('toast');
-  el.textContent = msg;
-  el.classList.add('on');
-  clearTimeout(_tt);
-  _tt = setTimeout(function(){ el.classList.remove('on'); }, 3400);
-}
-
-/* ══════════════════════════════════
-   START
-══════════════════════════════════ */
-init();
 </script>
 </body>
 </html>
