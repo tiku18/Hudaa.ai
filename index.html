@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hudaa - Strictly Salaf Islamic AI</title>
+    <title>Hudaa - Salaf Islamic AI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -15,7 +15,7 @@
         .sidebar-transition { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .message-fade { animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .suggestion-card { transition: all 0.2s ease; cursor: pointer; border: 1px solid #f1f5f9; }
+        .suggestion-card { transition: all 0.2s ease; cursor: pointer; border: 1px solid #f1f5f9; background: white; }
         .suggestion-card:hover { border-color: #059669; background-color: #ecfdf5; transform: translateY(-2px); }
     </style>
 </head>
@@ -29,7 +29,7 @@
                     <i class="fas fa-book-open"></i>
                 </div>
                 <div>
-                    <h3 class="font-bold text-emerald-900 text-sm">Student of Knowledge</h3>
+                    <h3 class="font-bold text-emerald-900 text-sm">Knowledge seeker</h3>
                     <p class="text-[10px] text-emerald-600 font-bold uppercase tracking-widest">Salaf-Based Access</p>
                 </div>
             </div>
@@ -43,7 +43,6 @@
             <a href="#" class="flex items-center p-3 rounded-xl hover:bg-emerald-50 text-slate-600 transition"><i class="fas fa-home mr-3"></i> Home</a>
             <a href="#" class="flex items-center p-3 rounded-xl hover:bg-emerald-50 text-slate-600 transition"><i class="fas fa-history mr-3"></i> Chat History</a>
             <a href="#" class="flex items-center p-3 rounded-xl hover:bg-emerald-50 text-slate-600 transition"><i class="fas fa-bookmark mr-3"></i> Saved Rulings</a>
-            <a href="#" class="flex items-center p-3 rounded-xl hover:bg-emerald-50 text-slate-600 transition"><i class="fas fa-user-shield mr-3"></i> Profile Security</a>
         </nav>
 
         <div class="p-6 border-t border-emerald-50 bg-slate-50/50">
@@ -59,7 +58,6 @@
 
     <!-- MAIN CONTENT -->
     <div class="flex-1 flex flex-col min-w-0 bg-white relative">
-        <!-- Header -->
         <header class="h-16 border-b border-emerald-100 flex items-center px-6 justify-between sticky top-0 bg-white/90 backdrop-blur-md z-10">
             <div class="flex items-center space-x-3">
                 <button onclick="toggleSidebar()" class="lg:hidden p-2 text-emerald-700 hover:bg-emerald-50 rounded-lg">
@@ -70,51 +68,36 @@
                     <span class="text-[10px] bg-emerald-700 text-white px-2 py-0.5 rounded font-bold">PRO</span>
                 </div>
             </div>
-            <div class="flex items-center space-x-4">
-                <div class="hidden md:block text-right">
-                    <p class="text-[9px] font-bold text-slate-400 uppercase">Knowledge Protocol</p>
-                    <p class="text-xs font-semibold text-emerald-800">Manhaj as-Salaf</p>
-                </div>
-                <div class="w-8 h-8 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-700">
-                    <i class="fas fa-shield-alt text-[12px]"></i>
-                </div>
-            </div>
         </header>
 
-        <!-- Chat Area -->
         <div id="chat-container" class="flex-1 overflow-y-auto p-4 md:p-8">
             <div id="messages" class="max-w-3xl mx-auto space-y-6 pb-24">
-                <!-- Welcome Section with Top 5 Suggestions -->
-                <div id="welcome-screen" class="py-12 text-center">
-                    <div class="w-20 h-20 bg-emerald-50 text-emerald-700 rounded-3xl mx-auto flex items-center justify-center text-3xl mb-6 shadow-sm border border-emerald-100">
+                <!-- Welcome screen with 5 cards -->
+                <div id="welcome-screen" class="py-8 text-center">
+                    <div class="w-16 h-16 bg-emerald-50 text-emerald-700 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-4 shadow-sm border border-emerald-100">
                         <i class="fas fa-kaaba"></i>
                     </div>
-                    <h2 class="text-2xl font-bold text-slate-800">Assalamu Alaikum wa Rahmatullah</h2>
-                    <p class="text-slate-500 text-sm mt-2 max-w-sm mx-auto">Ask any question according to the understanding of the Pious Predecessors (Salaf al-Salih).</p>
-                    
-                    <div class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-4 text-left max-w-2xl mx-auto">
-                        <div class="col-span-full mb-2">
-                            <span class="text-[10px] font-black text-emerald-600 uppercase tracking-[0.2em]">Core Knowledge Suggestions</span>
+                    <h2 class="text-xl font-bold text-slate-800">Assalamu Alaikum wa Rahmatullah</h2>
+                    <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-3 text-left max-w-2xl mx-auto">
+                        <div onclick="quickAsk('What is the true meaning of Tawheed and its types?')" class="suggestion-card p-4 rounded-xl shadow-sm border border-slate-100">
+                            <h4 class="font-bold text-emerald-800 text-sm">Meaning of Tawheed</h4>
+                            <p class="text-[11px] text-slate-500 mt-1">Understanding the Oneness of Allah.</p>
                         </div>
-                        <div onclick="quickAsk('What is the true meaning of Tawheed?')" class="suggestion-card p-4 rounded-2xl bg-white shadow-sm">
-                            <h4 class="font-bold text-emerald-800 text-sm mb-1">Tawheed</h4>
-                            <p class="text-[11px] text-slate-500">What is the true meaning of Tawheed and its categories?</p>
+                        <div onclick="quickAsk('What is the ruling on Shirk and what are its major types?')" class="suggestion-card p-4 rounded-xl shadow-sm border border-slate-100">
+                            <h4 class="font-bold text-emerald-800 text-sm">Ruling on Shirk</h4>
+                            <p class="text-[11px] text-slate-500 mt-1">Major and Minor Shirk explanation.</p>
                         </div>
-                        <div onclick="quickAsk('What is the ruling on Shirk and its types?')" class="suggestion-card p-4 rounded-2xl bg-white shadow-sm">
-                            <h4 class="font-bold text-emerald-800 text-sm mb-1">Rulings on Shirk</h4>
-                            <p class="text-[11px] text-slate-500">Explanation of Major and Minor Shirk with evidences.</p>
+                        <div onclick="quickAsk('How to identify Bidah (innovation) in religion?')" class="suggestion-card p-4 rounded-xl shadow-sm border border-slate-100">
+                            <h4 class="font-bold text-emerald-800 text-sm">Identifying Bid'ah</h4>
+                            <p class="text-[11px] text-slate-500 mt-1">Innovations in worship warning.</p>
                         </div>
-                        <div onclick="quickAsk('What is Bidah (innovation) in Islam?')" class="suggestion-card p-4 rounded-2xl bg-white shadow-sm">
-                            <h4 class="font-bold text-emerald-800 text-sm mb-1">Bid'ah</h4>
-                            <p class="text-[11px] text-slate-500">How to identify innovation and why it is rejected.</p>
+                        <div onclick="quickAsk('Who are the Salaf al-Salih and why follow them?')" class="suggestion-card p-4 rounded-xl shadow-sm border border-slate-100">
+                            <h4 class="font-bold text-emerald-800 text-sm">The Pious Salaf</h4>
+                            <p class="text-[11px] text-slate-500 mt-1">Following the first three generations.</p>
                         </div>
-                        <div onclick="quickAsk('Explain the importance of following the Sunnah.')" class="suggestion-card p-4 rounded-2xl bg-white shadow-sm">
-                            <h4 class="font-bold text-emerald-800 text-sm mb-1">Following Sunnah</h4>
-                            <p class="text-[11px] text-slate-500">The obligation of adhering to the Prophet's path.</p>
-                        </div>
-                        <div onclick="quickAsk('Who are the Salaf al-Salih?')" class="suggestion-card p-4 rounded-2xl bg-white shadow-sm md:col-span-full">
-                            <h4 class="font-bold text-emerald-800 text-sm mb-1">The Manhaj</h4>
-                            <p class="text-[11px] text-slate-500">Who are the Salaf and why is their understanding essential?</p>
+                        <div onclick="quickAsk('What is the importance of Sahih Hadith over weak narrations?')" class="suggestion-card p-4 rounded-xl shadow-sm border border-slate-100 md:col-span-full">
+                            <h4 class="font-bold text-emerald-800 text-sm">Authenticity of Hadith</h4>
+                            <p class="text-[11px] text-slate-500 mt-1">Sticking to authentic narrations.</p>
                         </div>
                     </div>
                 </div>
@@ -125,31 +108,48 @@
         <div class="p-4 md:p-8 bg-gradient-to-t from-white via-white to-transparent">
             <div class="max-w-3xl mx-auto relative">
                 <div id="loading" class="hidden absolute -top-12 left-0 right-0 text-center">
-                    <div class="inline-flex items-center space-x-2 bg-emerald-50 px-4 py-2 rounded-full border border-emerald-200 shadow-sm">
+                    <div class="inline-flex items-center space-x-2 bg-emerald-50 px-4 py-2 rounded-full border border-emerald-200">
                         <div class="w-1.5 h-1.5 bg-emerald-700 rounded-full animate-pulse"></div>
-                        <span class="text-[10px] font-bold text-emerald-800 uppercase tracking-widest">Searching Quran & Sunnah...</span>
+                        <span class="text-[10px] font-bold text-emerald-800 uppercase tracking-widest">Searching Salaf Knowledge...</span>
                     </div>
                 </div>
                 
                 <div class="flex items-center bg-white rounded-2xl border-2 border-slate-100 p-2 shadow-2xl focus-within:border-emerald-500 transition-all">
                     <input id="user-input" type="text" placeholder="Search for authentic knowledge..." class="flex-1 bg-transparent p-3 outline-none text-sm md:text-base">
                     <button onclick="sendMessage()" class="bg-emerald-700 text-white w-12 h-12 rounded-xl flex items-center justify-center shadow-lg hover:bg-emerald-800 active:scale-95 transition-all">
-                        <i class="fas fa-search"></i>
+                        <i class="fas fa-paper-plane"></i>
                     </button>
                 </div>
-                <p class="text-[10px] text-center text-slate-400 mt-4 font-medium italic">"Knowledge is taken only from the trustworthy sources."</p>
             </div>
         </div>
     </div>
 
     <script>
-        const HUDAA_AI_KEY = "AIzaSyCaZy5HcWA3vum-aJ9SSToiLnyIMbhbc_o";
+        const API_KEY = "AIzaSyCaZy5HcWA3vum-aJ9SSToiLnyIMbhbc_o";
+        const SYSTEM_PROMPT = `You are Hudaa, a strictly Salaf-based Islamic AI assistant. 
+        Respond ONLY in English. Use Arabic only for Quran/Hadith text with English translation.
+        Base every answer on Quran, Sahih Sunnah and Salaf al-Salih understanding.
+        Follow scholars like Ibn Taymiyyah, Ibn al-Qayyim, Ibn Baz, Al-Albani, and Ibn Uthaymeen.
+        Warn against Bidah. End with 'And Allah knows best.'`;
 
         const messagesDiv = document.getElementById('messages');
         const userInput = document.getElementById('user-input');
         const loading = document.getElementById('loading');
         const chatContainer = document.getElementById('chat-container');
         const welcomeScreen = document.getElementById('welcome-screen');
+
+        async function fetchWithRetry(url, options, retries = 5, backoff = 1000) {
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (response.ok) return await response.json();
+                } catch (err) {
+                    if (i === retries - 1) throw err;
+                }
+                await new Promise(resolve => setTimeout(resolve, backoff));
+                backoff *= 2;
+            }
+        }
 
         async function sendMessage() {
             const query = userInput.value.trim();
@@ -162,32 +162,23 @@
             loading.classList.remove('hidden');
 
             try {
-                let response;
-                let delay = 1000;
-                // Exponential Backoff
-                for (let i = 0; i < 5; i++) {
-                    response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${HUDAA_AI_KEY}`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            contents: [{ parts: [{ text: query }] }],
-                            systemInstruction: { 
-                                parts: [{ text: "You are Hudaa, a strictly Salaf-based Islamic AI assistant. Your mission is to provide answers ONLY based on the Quran, Authentic Sunnah, and the understanding of the Salaf al-Salih. 1. You MUST respond ONLY in English. 2. You may use Arabic for Quranic verses or Hadith text, but all explanations must be in English. 3. STRICTLY avoid personal opinions, cultural innovations (Bid'ah), or weak (Dha'if) narrations. 4. If a question is about an innovation, clarify its status according to the Salaf. 5. Structure: [Evidence from Quran], [Evidence from Sahih Hadith], [Explanation by Salaf Scholars like Ibn Taymiyyah, Ibn Baz, Al-Albani, etc.], [Conclusion]. End with 'And Allah knows best.' Do not use any other languages like Urdu, Hindi, or Bengali." }] 
-                            }
-                        })
-                    });
-                    if (response.ok) break;
-                    await new Promise(res => setTimeout(res, delay));
-                    delay *= 2;
-                }
+                // Using gemini-1.5-flash for maximum stability
+                const data = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [
+                            { role: "user", parts: [{ text: SYSTEM_PROMPT }] },
+                            { role: "model", parts: [{ text: "Understood. I will strictly follow Salaf-based English responses." }] },
+                            { role: "user", parts: [{ text: query }] }
+                        ]
+                    })
+                });
 
-                if (!response.ok) throw new Error();
-
-                const data = await response.json();
-                const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Unable to retrieve response. Please verify the evidence and try again.";
+                const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text || "No response received. Please try again.";
                 appendMessage('hudaa', aiText);
             } catch (error) {
-                appendMessage('hudaa', "Error: Connectivity issue. Please ensure your connection is stable and try again.");
+                appendMessage('hudaa', "Connectivity issue detected. Please refresh or try again in a moment.");
             } finally {
                 loading.classList.add('hidden');
             }
@@ -196,20 +187,16 @@
         function appendMessage(role, text) {
             const msgWrapper = document.createElement('div');
             msgWrapper.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'} message-fade`;
-            
             const isHudaa = role === 'hudaa';
-            const bgClass = isHudaa ? 'bg-white border border-slate-100 text-slate-800' : 'bg-emerald-700 text-white shadow-md';
-            const roundedClass = isHudaa ? 'rounded-2xl rounded-tl-none' : 'rounded-2xl rounded-tr-none';
-
+            
             msgWrapper.innerHTML = `
-                <div class="flex space-x-3 max-w-[90%] md:max-w-[80%]">
-                    ${isHudaa ? '<div class="w-8 h-8 rounded-full bg-emerald-700 flex-shrink-0 flex items-center justify-center text-white text-[10px] shadow-sm"><i class="fas fa-check-double"></i></div>' : ''}
-                    <div class="p-4 text-sm md:text-base leading-relaxed shadow-sm whitespace-pre-wrap ${bgClass} ${roundedClass} arabic-text">
+                <div class="flex space-x-3 max-w-[85%] md:max-w-[75%]">
+                    ${isHudaa ? '<div class="w-8 h-8 rounded-full bg-emerald-700 flex-shrink-0 flex items-center justify-center text-white text-[10px]"><i class="fas fa-shield-alt"></i></div>' : ''}
+                    <div class="p-4 text-sm leading-relaxed shadow-sm whitespace-pre-wrap ${isHudaa ? 'bg-white border border-slate-100 rounded-2xl rounded-tl-none' : 'bg-emerald-700 text-white rounded-2xl rounded-tr-none'} arabic-text">
                         ${text}
                     </div>
                 </div>
             `;
-            
             messagesDiv.appendChild(msgWrapper);
             chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: 'smooth' });
         }
@@ -223,18 +210,7 @@
             document.getElementById('sidebar').classList.toggle('-translate-x-full'); 
         }
 
-        userInput.addEventListener('keypress', (e) => { 
-            if (e.key === 'Enter') sendMessage(); 
-        });
-
-        // Close sidebar when clicking outside on mobile
-        document.addEventListener('click', (e) => {
-            const sidebar = document.getElementById('sidebar');
-            const menuBtn = document.querySelector('header button');
-            if (sidebar && !sidebar.contains(e.target) && menuBtn && !menuBtn.contains(e.target) && !sidebar.classList.contains('-translate-x-full')) {
-                sidebar.classList.add('-translate-x-full');
-            }
-        });
+        userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
     </script>
 </body>
 </html>
